@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">WorkNotifier</string>
+    <string name="service_label">WorkNotifier</string>
+
+    <!-- Strings related to the Alert Dialog -->
+    <string name="notification_listener_dialogue_title">"Notification Listener Service"</string>
+    <string name="notification_listener_dialogue_explanation">"For the app to work you need to enable the Notification Listener Service. Enable it now?"</string>
+    <string name="battery_optimization_dialogue_title">"Disable Battery Optimization"</string>
+    <string name="battery_optimization_dialogue_explanation">"For the app to work you need to disable the Battery Optimization. Disable it now?"</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

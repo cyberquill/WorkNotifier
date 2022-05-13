@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/hero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/hero_bg"
+            android:padding="24dp"
+            android:elevation="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/segoe_ui_bold"
+                    android:text="Add Work Apps"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="38sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/segoe_ui"
+                    android:text="Insert the play-store links for all the work-profile apps, whose notifications you'll like to receive on the smartwatch."
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="16sp"
+                    android:paddingBottom="24dp"
+                    android:justificationMode="inter_word"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/appURL"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/appURL"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="16dp"
+                    android:fontFamily="@font/segoe_ui"
+                    android:textColor="?android:textColorSecondary"
+                    android:hint="https://play.google.com/store/apps/details?id=your.work.app"
+                    android:background="@drawable/app_url_input_bg"
+                    android:inputType="textUri"
+                    android:textSize="18sp"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/submitBtn"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <android.widget.ImageButton
+                    android:id="@+id/submitBtn"
+                    android:src="@drawable/ic_add"
+                    android:scaleType="fitCenter"
+                    android:padding="4dp"
+                    android:layout_width="64dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/submit_btn_bg"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/appList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="52dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/hero" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
