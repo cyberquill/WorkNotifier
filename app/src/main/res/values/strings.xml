@@ -9,6 +9,8 @@
     <string name="battery_optimization_dialogue_explanation">"For the app to work you need to disable the Battery Optimization. Disable it now?"</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="hero_heading">"Add Work Apps"</string>
+    <string name="url_input_hint">"https://play.google.com/store/apps/details?id=your.work.app"</string>
+    <string name="hero_desc">"Insert the play-store links for all the work-profile apps, whose notifications you'll like to receive on the smartwatch."</string>
 </resources>

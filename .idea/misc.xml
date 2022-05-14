@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Repository/WorkNotifier/app/src/main/res/drawable-v21/app_widget_background.xml" value="0.1665" />
+        <entry key="..\:/Repository/WorkNotifier/app/src/main/res/drawable-v21/app_widget_inner_view_background.xml" value="0.1665" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.164" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/drawable/app_url_input_bg.xml" value="0.1665" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/drawable/hero_bg.xml" value="0.1665" />
@@ -23,6 +25,7 @@
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/layout/fragment_notifications.xml" value="0.2099187687045746" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/layout/fragment_settings.xml" value="0.19837537409149208" />
+        <entry key="..\:/Repository/WorkNotifier/app/src/main/res/layout/work_notifier_widget.xml" value="0.2099187687045746" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/menu/btm_menu.xml" value="0.2099187687045746" />
         <entry key="..\:/Repository/WorkNotifier/app/src/main/res/menu/btm_nav_menu.xml" value="0.20726044744617983" />
       </map>

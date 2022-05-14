@@ -48,22 +48,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 app:layout_constraintVertical_chainStyle="packed"
-                android:text="TextView"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:fontFamily="@font/segoe_ui_bold"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/appPkg"
                 app:layout_constraintStart_toEndOf="@+id/view2"
+                app:layout_constraintEnd_toStartOf="@id/appRemoveBtn"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/appPkg"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:textSize="12sp"
-                android:text="TextView"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/view2"
+                app:layout_constraintEnd_toStartOf="@id/appRemoveBtn"
                 app:layout_constraintTop_toBottomOf="@+id/appName" />
 
             <android.widget.ImageButton

@@ -27,6 +27,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     namespace 'com.brij1999.worknotifier'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
