@@ -14,6 +14,7 @@ import android.util.Log;
 public class WorkNotifierListenerService extends NotificationListenerService {
 
     AppManager appManager;
+    Logger logger;
     NotificationManager mNotificationManager;
     private TinyDB tinydb;
 
@@ -26,16 +27,18 @@ public class WorkNotifierListenerService extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         appManager = AppManager.getInstance(getApplicationContext());
+        logger = Logger.getInstance(getApplicationContext());
         tinydb = new TinyDB(getApplicationContext());
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (BuildConfig.DEBUG)    Log.e("WorkNotifierListenerService", "Hello");
+        logger.log("WorkNotifierListenerService", "onCreate", "Hello");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (BuildConfig.DEBUG)    Log.i("onStartCommand", "Inside");
+        logger.log("WorkNotifierListenerService", "onStartCommand", "Inside");
+
         if (intent.getAction().equals(FOREGROUND_START_ACTION)) {
-            if (BuildConfig.DEBUG)    Log.i("onStartCommand", "Received Start Foreground Intent ");
+            logger.log("WorkNotifierListenerService", "onStartCommand", "Received Start Foreground Intent");
 
             Intent cIntent = new Intent(getApplicationContext(), MainActivity.class);
             cIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -53,17 +56,15 @@ public class WorkNotifierListenerService extends NotificationListenerService {
                     .addAction(stopAction);
 
             startForeground(FOREGROUND_NOTIFICATION_ID, notification.build());
-            if (BuildConfig.DEBUG)    Log.e("onStartCommand", "Created Foreground Notification");
+            logger.log("WorkNotifierListenerService", "onStartCommand", "Created Foreground Notification");
             ComponentName componentName = new ComponentName(getApplicationContext(), WorkNotifierListenerService.class);
             requestRebind(componentName);
-            tinydb.putBoolean(WORKNOTIFIER_LISTENER_ACTIVE, true);
         }
         else if (intent.getAction().equals(FOREGROUND_STOP_ACTION)) {
-            if (BuildConfig.DEBUG)    Log.i("onStartCommand", "Received Stop Foreground Intent");
+            logger.log("WorkNotifierListenerService", "onStartCommand", "Received Stop Foreground Intent");
 
-            tinydb.putBoolean(WORKNOTIFIER_LISTENER_ACTIVE, false);
             requestUnbind();
-            stopForeground(true);
+            stopForeground(STOP_FOREGROUND_REMOVE);
             stopSelfResult(startId);
         }
         return START_REDELIVER_INTENT;
@@ -72,27 +73,32 @@ public class WorkNotifierListenerService extends NotificationListenerService {
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
-        if (BuildConfig.DEBUG)    Log.e("onListenerConnected", "Listener Connected");
+        logger.log("WorkNotifierListenerService", "onListenerConnected", "Listener Connected");
     }
 
     @Override
     public void onListenerDisconnected() {
+        logger.log("WorkNotifierListenerService", "onListenerDisconnected", "Listener Disconnected");
+        stopForeground(STOP_FOREGROUND_REMOVE);
+        Intent intent = new Intent("com.brij1999.worknotifier.RESPAWN");
+        intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        sendBroadcast(intent);
+        logger.log("WorkNotifierListenerService", "onListenerDisconnected", "Sent UNDEAD broadcast");
         super.onListenerDisconnected();
-        if (BuildConfig.DEBUG)    Log.e("onListenerDisconnected", "Listener Disconnected");
     }
 
     @Override
     public void onDestroy() {
-        if (BuildConfig.DEBUG)    Log.e("onDestroy", "Service Killed");
-        tinydb.putBoolean(WORKNOTIFIER_LISTENER_ACTIVE, false);
+        logger.log("WorkNotifierListenerService", "onDestroy", "Service Killed");
         super.onDestroy();
     }
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        if (BuildConfig.DEBUG)    Log.i("onNotificationPosted", "Inside");
-        if(!tinydb.getBoolean(WORKNOTIFIER_LISTENER_ACTIVE)) return;
         String packageName = sbn.getPackageName();
+        logger.log("WorkNotifierListenerService", "onNotificationPosted", "Invoked ("+packageName+")");
+        if(!tinydb.getBoolean(WORKNOTIFIER_LISTENER_ACTIVE)) return;
+
         Notification ntf = sbn.getNotification();
         if(packageName.equals(MainActivity.PACKAGE_NAME))  return;
         if(!appManager.containsPkg(packageName))  return;
@@ -100,6 +106,7 @@ public class WorkNotifierListenerService extends NotificationListenerService {
         Notification.Builder reBuilder = Notification.Builder.recoverBuilder(getApplicationContext(), ntf).setChannelId(MainActivity.NOTIFICATION_CHANNEL_ID).setGroup(packageName);
         mNotificationManager.notify(getModId(sbn), reBuilder.build());
         cancelNotification(sbn.getKey());
+        logger.log("WorkNotifierListenerService", "onNotificationPosted", "Created Notification for "+packageName);
     }
 
     public int getModId(StatusBarNotification sbn) {

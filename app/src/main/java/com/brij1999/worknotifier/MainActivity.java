@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
     AppManager appManager;
+    Logger logger;
     AlertDialog enableNotificationListenerAlertDialog;
     AlertDialog enableBatteryOptimizationAlertDialog;
 
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         appManager = AppManager.getInstance(getApplicationContext());
+        logger = Logger.getInstance(getApplicationContext());
         tinydb = new TinyDB(getApplicationContext());
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
@@ -70,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        IntentFilter intentFilter = new IntentFilter("com.brij1999.worknotifier.RESPAWN");
+        WorkNotifierBroadcastReceiver wnReciever = new WorkNotifierBroadcastReceiver();
+        registerReceiver(wnReciever, intentFilter);
 
         // Get intent, action and MIME type
         Intent intent = getIntent();
@@ -102,18 +109,20 @@ public class MainActivity extends AppCompatActivity {
         serviceBtn.setOnClickListener((v) -> {
             if(!tinydb.getBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE)) {
                 //start
+                tinydb.putBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE, true);
+                serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOff)));
                 Intent startIntent = new Intent(MainActivity.this, WorkNotifierListenerService.class);
                 startIntent.setAction(WorkNotifierListenerService.FOREGROUND_START_ACTION);
                 startForegroundService(startIntent);
-                if (BuildConfig.DEBUG)    Log.e("onClick", "Service Started");
-                serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOff)));
+                logger.log("MainActivity", "onCreate-onClick", "Service Started");
             } else {
                 //stop
+                tinydb.putBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE, false);
+                serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOn)));
                 Intent stopIntent = new Intent(MainActivity.this, WorkNotifierListenerService.class);
                 stopIntent.setAction(WorkNotifierListenerService.FOREGROUND_STOP_ACTION);
                 startService(stopIntent);
-                if (BuildConfig.DEBUG)    Log.e("onClick", "Service Stopped");
-                serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOn)));
+                logger.log("MainActivity", "onCreate-onClick", "Service Stopped");
             }
         });
 
@@ -164,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     app.setAppName(appName);
                     app.setAppIcon(iconURL);
                     appManager.addApp(app);
-                    if (BuildConfig.DEBUG)    Log.e("App Added",app.toString());
+                    logger.log("MainActivity", "addURL", "App Added: "+app);
 
                     runOnUiThread(() -> {
                         homeFragment.adapter.notifyItemInserted(appManager.size()-1);
