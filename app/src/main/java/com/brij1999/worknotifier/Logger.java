@@ -39,13 +39,14 @@ public class Logger {
 
     public void log(String cls, String fn, String msg) {
         try {
+            if (!BuildConfig.DEBUG) return;
             String log;
             if(msg.equals("<break/>")) {
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < 20; i++) {
                     stringBuilder.append("----------");
                 }
-                log = stringBuilder.toString()+"\n";
+                log = stringBuilder +"\n";
             } else {
                 log = getTime()+"    "+cls+".|."+fn+" :    "+msg+"\n";
             }

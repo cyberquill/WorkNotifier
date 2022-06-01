@@ -6,14 +6,11 @@ import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -38,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     AppManager appManager;
     Logger logger;
     AlertDialog enableNotificationListenerAlertDialog;
-    AlertDialog enableBatteryOptimizationAlertDialog;
 
     BottomAppBar btmAppBar;
     HomeFragment homeFragment = new HomeFragment();
@@ -67,16 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.home:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, homeFragment).commit();
                     return true;
-                case R.id.settings:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, settingsFragment).commit();
-                    return true;
+//                case R.id.settings:
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, settingsFragment).commit();
+//                    return true;
             }
             return false;
         });
-
-        IntentFilter intentFilter = new IntentFilter("com.brij1999.worknotifier.RESPAWN");
-        WorkNotifierBroadcastReceiver wnReciever = new WorkNotifierBroadcastReceiver();
-        registerReceiver(wnReciever, intentFilter);
 
         // Get intent, action and MIME type
         Intent intent = getIntent();
@@ -85,13 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 addURL(sharedText);
             }
-        }
-
-        // Request Exemption from Battery Optimization
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (!pm.isIgnoringBatteryOptimizations(PACKAGE_NAME)) {
-            enableBatteryOptimizationAlertDialog = buildBatteryOptimizationAlertDialog();
-            enableBatteryOptimizationAlertDialog.show();
         }
 
         // If the user did not turn the notification listener service on we prompt him to do so
@@ -111,22 +97,19 @@ public class MainActivity extends AppCompatActivity {
                 //start
                 tinydb.putBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE, true);
                 serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOff)));
-                Intent startIntent = new Intent(MainActivity.this, WorkNotifierListenerService.class);
-                startIntent.setAction(WorkNotifierListenerService.FOREGROUND_START_ACTION);
-                startForegroundService(startIntent);
+                Toast.makeText(MainActivity.this, "Notification Monitoring Enabled", Toast.LENGTH_SHORT).show();
                 logger.log("MainActivity", "onCreate-onClick", "Service Started");
             } else {
                 //stop
                 tinydb.putBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE, false);
                 serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOn)));
-                Intent stopIntent = new Intent(MainActivity.this, WorkNotifierListenerService.class);
-                stopIntent.setAction(WorkNotifierListenerService.FOREGROUND_STOP_ACTION);
-                startService(stopIntent);
+                Toast.makeText(MainActivity.this, "Notification Monitoring Disabled", Toast.LENGTH_SHORT).show();
                 logger.log("MainActivity", "onCreate-onClick", "Service Stopped");
             }
         });
 
         // Create Notification channel to show notifications
+
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "WorkNotifier Notification", NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("All Work Profile Notifications Captured");
@@ -158,16 +141,16 @@ public class MainActivity extends AppCompatActivity {
                 app.setAppPkg(pkgName);
 
                 executorService.execute(() -> {
-                    URL iconURL;
-                    String appName;
+                    URL iconURL = null;
+                    String appName = "";
                     try {
                         Document doc = Jsoup.connect("https://play.google.com/store/apps/details?id="+pkgName).get();
-                        URL image = new URL(doc.select("img[alt=\"Cover art\"]").first().attr("src").replaceAll("=s180-rw", "=s360-rw"));
-                        appName = doc.select("[itemprop=\"name\"] span").first().text();
-                        iconURL = image;
+                        Element image = doc.select("img[alt=\"Icon image\"]").first();
+                        Element name = doc.select("[itemprop=\"name\"] span").first();
+
+                        iconURL = (image==null) ? new URL("https://github.com/brij1999/MiscFiles/raw/master/android_icon.png") : new URL(image.attr("src").replaceAll("=s180-rw", "=s360-rw"));
+                        appName = (name==null) ? pkgName : name.text();
                     } catch (NullPointerException | IOException e) {
-                        iconURL = null;
-                        appName = pkgName;
                         e.printStackTrace();
                     }
                     app.setAppName(appName);
@@ -228,23 +211,6 @@ public class MainActivity extends AppCompatActivity {
                     (dialog, id) -> startActivity(new Intent(ACTION_NOTIFICATION_LISTENER_SETTINGS)))
                 .setNegativeButton(R.string.no,
                     (dialog, id) -> finishAndRemoveTask());
-        return(alertDialogBuilder.create());
-    }
-
-    /**
-     * Build Notification Listener Alert Dialog.
-     * Builds the alert dialog that pops up if the user has not turned
-     * the Notification Listener Service on yet.
-     * @return An alert dialog which leads to the notification enabling screen
-     */
-    private AlertDialog buildBatteryOptimizationAlertDialog(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
-                .setTitle(R.string.battery_optimization_dialogue_title)
-                .setMessage(R.string.battery_optimization_dialogue_explanation)
-                .setPositiveButton(R.string.yes,
-                    (dialog, id) -> startActivity(new Intent().setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)))
-                .setNegativeButton(R.string.no,
-                    (dialog, id) -> {});
         return(alertDialogBuilder.create());
     }
 }

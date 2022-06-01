@@ -11,6 +11,6 @@
     <string name="no">No</string>
 
     <string name="hero_heading">"Add Work Apps"</string>
-    <string name="url_input_hint">"https://play.google.com/store/apps/details?id=your.work.app"</string>
+    <string name="url_input_hint">"Example: https://play.google.com/store/apps/details?id=your.work.app"</string>
     <string name="hero_desc">"Insert the play-store links for all the work-profile apps, whose notifications you'll like to receive on the smartwatch."</string>
 </resources>

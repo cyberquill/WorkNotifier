@@ -21,7 +21,8 @@ public class AppInfo {
     @NonNull
     @Override
     public String toString() {
-        return super.toString()+"\nName:\t\t"+appName+"\nPackage:\t"+appPkg+"\nApp Icon:\t"+appIcon.toString()+"\n";
+        String url = (appIcon==null) ? "" : appIcon.toString();
+        return super.toString()+"\nName:\t\t"+appName+"\nPackage:\t"+appPkg+"\nApp Icon:\t"+url+"\n";
     }
 
     public String getAppName() {

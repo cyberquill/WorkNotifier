@@ -4,7 +4,6 @@
     package="com.brij1999.worknotifier">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="false"
@@ -41,17 +40,6 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-
-        <receiver
-            android:name="com.brij1999.worknotifier.WorkNotifierBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="100">
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--                <action android:name="android.intent.action.USER_PRESENT" />-->
-                <action android:name="com.brij1999.worknotifier.RESPAWN" android:enabled="true" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

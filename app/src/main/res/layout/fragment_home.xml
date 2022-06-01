@@ -63,7 +63,7 @@
                             android:hint="@string/url_input_hint"
                             android:background="@drawable/app_url_input_bg"
                             android:inputType="textUri"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:singleLine="true"
                             android:imeOptions="actionDone"
                             app:layout_constraintBottom_toBottomOf="parent"

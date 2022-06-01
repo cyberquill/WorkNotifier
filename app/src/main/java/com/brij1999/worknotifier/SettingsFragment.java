@@ -17,18 +17,18 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        Logger logger = Logger.getInstance(view.getContext());
-        Button logBtn = view.findViewById(R.id.logBtn);
-        Button clsBtn = view.findViewById(R.id.clsBtn);
-        TextView logView = view.findViewById(R.id.logView);
-        logBtn.setOnClickListener((v) -> {
-            logger.log("SettingsFragment","onCreateView","<break/>");
-            logView.setText(logger.get());
-        });
-        clsBtn.setOnClickListener((v) -> {
-            logger.clear();
-            logView.setText("");
-        });
+//        Logger logger = Logger.getInstance(view.getContext());
+//        Button logBtn = view.findViewById(R.id.logBtn);
+//        Button clsBtn = view.findViewById(R.id.clsBtn);
+//        TextView logView = view.findViewById(R.id.logView);
+//        logBtn.setOnClickListener((v) -> {
+//            logger.log("SettingsFragment","onCreateView","<break/>");
+//            logView.setText(logger.get());
+//        });
+//        clsBtn.setOnClickListener((v) -> {
+//            logger.clear();
+//            logView.setText("");
+//        });
         return view;
     }
 }

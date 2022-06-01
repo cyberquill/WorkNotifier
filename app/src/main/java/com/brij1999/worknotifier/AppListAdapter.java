@@ -48,7 +48,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppListV
             try {
                 Bitmap image = BitmapFactory.decodeStream(app.getAppIcon().openConnection().getInputStream());
                 new Handler(Looper.getMainLooper()).post(() -> holder.appIcon.setImageBitmap(image));
-            } catch (IOException e) {
+            } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
             }
         });
