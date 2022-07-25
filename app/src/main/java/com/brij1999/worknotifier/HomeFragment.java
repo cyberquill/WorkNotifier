@@ -1,10 +1,13 @@
 package com.brij1999.worknotifier;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -44,6 +47,14 @@ public class HomeFragment extends Fragment {
             String url_input = inputURL.getText().toString();
             ((MainActivity) requireActivity()).addURL(url_input);
             inputURL.getText().clear();
+        });
+
+        // Setting up support-me button
+        Button supportBtn = view.findViewById(R.id.supportBtn);
+        supportBtn.setOnClickListener(v -> {
+            Uri uri = Uri.parse("https://www.buymeacoffee.com/brij");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
         });
 
         return view;

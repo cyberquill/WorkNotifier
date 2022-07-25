@@ -1,8 +1,13 @@
 package com.brij1999.worknotifier;
 
+import static com.brij1999.worknotifier.WorkNotifierListenerService.SERVICE_NOTIFICATION_ID;
+import static com.brij1999.worknotifier.WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE;
+
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog enableNotificationListenerAlertDialog;
 
     BottomAppBar btmAppBar;
+    NotificationManager mNotificationManager;
     HomeFragment homeFragment = new HomeFragment();
     SettingsFragment settingsFragment = new SettingsFragment();
 
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         logger = Logger.getInstance(getApplicationContext());
         tinydb = new TinyDB(getApplicationContext());
         PACKAGE_NAME = getApplicationContext().getPackageName();
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Fragments Setup
         getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, homeFragment).commit();
@@ -87,30 +94,43 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FloatingActionButton serviceBtn = findViewById(R.id.serviceBtn);
-        if(!tinydb.getBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE)) {
+        if(!tinydb.getBoolean(WORKNOTIFIER_LISTENER_ACTIVE)) {
             serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOn)));
         } else {
             serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOff)));
         }
         serviceBtn.setOnClickListener((v) -> {
-            if(!tinydb.getBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE)) {
+            if(!tinydb.getBoolean(WORKNOTIFIER_LISTENER_ACTIVE)) {
                 //start
-                tinydb.putBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE, true);
+                tinydb.putBoolean(WORKNOTIFIER_LISTENER_ACTIVE, true);
                 serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOff)));
                 Toast.makeText(MainActivity.this, "Notification Monitoring Enabled", Toast.LENGTH_SHORT).show();
                 logger.log("MainActivity", "onCreate-onClick", "Service Started");
+
+                Intent cIntent = new Intent(getApplicationContext(), MainActivity.class);
+                cIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent cPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, cIntent, PendingIntent.FLAG_IMMUTABLE);
+
+                Notification.Builder notification = new Notification.Builder(getApplicationContext(), MainActivity.NOTIFICATION_CHANNEL_ID)
+                        .setContentTitle("WorkNotifier Enabled")
+                        .setContentText("Forwarding notifications of monitored apps to watch")
+                        .setSmallIcon(getApplicationInfo().icon)
+                        .setContentIntent(cPendingIntent)
+                        .setOngoing(true);
+
+                mNotificationManager.notify(SERVICE_NOTIFICATION_ID, notification.build());
             } else {
                 //stop
-                tinydb.putBoolean(WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE, false);
+                tinydb.putBoolean(WORKNOTIFIER_LISTENER_ACTIVE, false);
                 serviceBtn.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorOn)));
                 Toast.makeText(MainActivity.this, "Notification Monitoring Disabled", Toast.LENGTH_SHORT).show();
                 logger.log("MainActivity", "onCreate-onClick", "Service Stopped");
+
+                mNotificationManager.cancel(SERVICE_NOTIFICATION_ID);
             }
         });
 
         // Create Notification channel to show notifications
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "WorkNotifier Notification", NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("All Work Profile Notifications Captured");
         mNotificationManager.createNotificationChannel(channel);

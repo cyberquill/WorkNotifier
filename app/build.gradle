@@ -9,8 +9,8 @@ android {
         applicationId "com.brij1999.worknotifier"
         minSdk 26
         targetSdk 31
-        versionCode 20220531
-        versionName "1.1.1"
+        versionCode 20220605
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
