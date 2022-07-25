@@ -1,53 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="50dp"
+    android:paddingHorizontal="15dp"
+    android:divider="@drawable/vertical_separator"
+    android:dividerPadding="0dp"
+    android:showDividers="middle"
     tools:context=".SettingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
 
-    <Button
-        android:id="@+id/logBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="View Updated Logs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/clsBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Clear Logs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logBtn" />
-
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/clsBtn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="wrap_content"
+        android:paddingVertical="20dp">
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/hideNtfText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Hide 'WorkNotifier Enabled' notification"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/activeNtfSwitch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/logView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No settings available\n\n(Coming Soon)" />
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/activeNtfSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="20dp">
 
-        </HorizontalScrollView>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/appVersionText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="App Version"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/appVersion"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/appVersion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="App Version"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appVersionText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
