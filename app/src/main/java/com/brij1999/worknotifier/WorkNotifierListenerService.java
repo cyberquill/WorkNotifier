@@ -16,6 +16,7 @@ public class WorkNotifierListenerService extends NotificationListenerService {
     private TinyDB tinydb;
 
     public static final String WORKNOTIFIER_LISTENER_ACTIVE = "WORKNOTIFIER_LISTENER_ACTIVE";
+    public static final String WORKNOTIFIER_HIDE_MONITOR_NTF = "WORKNOTIFIER_HIDE_MONITOR_NTF";
     public static final int SERVICE_NOTIFICATION_ID = 101;
 
     @Override
@@ -38,6 +39,7 @@ public class WorkNotifierListenerService extends NotificationListenerService {
     public void onListenerConnected() {
         super.onListenerConnected();
         logger.log("WorkNotifierListenerService", "onListenerConnected", "Listener Connected");
+        if(tinydb.getBoolean(WORKNOTIFIER_HIDE_MONITOR_NTF))    return;
 
         boolean ntfDetected = false;
         StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
@@ -66,6 +68,7 @@ public class WorkNotifierListenerService extends NotificationListenerService {
     @Override
     public void onListenerDisconnected() {
         logger.log("WorkNotifierListenerService", "onListenerDisconnected", "Listener Disconnected");
+        if(tinydb.getBoolean(WORKNOTIFIER_HIDE_MONITOR_NTF))    return;
 
         boolean ntfDetected = false;
         StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
@@ -93,6 +96,7 @@ public class WorkNotifierListenerService extends NotificationListenerService {
         String packageName = sbn.getPackageName();
         logger.log("WorkNotifierListenerService", "onNotificationPosted", "Invoked ("+packageName+")");
         if(!tinydb.getBoolean(WORKNOTIFIER_LISTENER_ACTIVE)) return;
+        if(!sbn.isClearable()) return;
 
         Notification ntf = sbn.getNotification();
         if(packageName.equals(MainActivity.PACKAGE_NAME))  return;

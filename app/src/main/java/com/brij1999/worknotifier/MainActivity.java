@@ -1,6 +1,7 @@
 package com.brij1999.worknotifier;
 
 import static com.brij1999.worknotifier.WorkNotifierListenerService.SERVICE_NOTIFICATION_ID;
+import static com.brij1999.worknotifier.WorkNotifierListenerService.WORKNOTIFIER_HIDE_MONITOR_NTF;
 import static com.brij1999.worknotifier.WorkNotifierListenerService.WORKNOTIFIER_LISTENER_ACTIVE;
 
 import android.app.AlertDialog;
@@ -71,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.home:
                     getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, homeFragment).commit();
                     return true;
-//                case R.id.settings:
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, settingsFragment).commit();
-//                    return true;
+                case R.id.settings:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, settingsFragment).commit();
+                    return true;
             }
             return false;
         });
@@ -107,18 +108,20 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Notification Monitoring Enabled", Toast.LENGTH_SHORT).show();
                 logger.log("MainActivity", "onCreate-onClick", "Service Started");
 
-                Intent cIntent = new Intent(getApplicationContext(), MainActivity.class);
-                cIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent cPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, cIntent, PendingIntent.FLAG_IMMUTABLE);
+                if(!tinydb.getBoolean(WORKNOTIFIER_HIDE_MONITOR_NTF)) {
+                    Intent cIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    cIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent cPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, cIntent, PendingIntent.FLAG_IMMUTABLE);
 
-                Notification.Builder notification = new Notification.Builder(getApplicationContext(), MainActivity.NOTIFICATION_CHANNEL_ID)
-                        .setContentTitle("WorkNotifier Enabled")
-                        .setContentText("Forwarding notifications of monitored apps to watch")
-                        .setSmallIcon(getApplicationInfo().icon)
-                        .setContentIntent(cPendingIntent)
-                        .setOngoing(true);
+                    Notification.Builder notification = new Notification.Builder(getApplicationContext(), MainActivity.NOTIFICATION_CHANNEL_ID)
+                            .setContentTitle("WorkNotifier Enabled")
+                            .setContentText("Forwarding notifications of monitored apps to watch")
+                            .setSmallIcon(getApplicationInfo().icon)
+                            .setContentIntent(cPendingIntent)
+                            .setOngoing(true);
 
-                mNotificationManager.notify(SERVICE_NOTIFICATION_ID, notification.build());
+                    mNotificationManager.notify(SERVICE_NOTIFICATION_ID, notification.build());
+                }
             } else {
                 //stop
                 tinydb.putBoolean(WORKNOTIFIER_LISTENER_ACTIVE, false);
@@ -126,7 +129,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Notification Monitoring Disabled", Toast.LENGTH_SHORT).show();
                 logger.log("MainActivity", "onCreate-onClick", "Service Stopped");
 
-                mNotificationManager.cancel(SERVICE_NOTIFICATION_ID);
+                if(!tinydb.getBoolean(WORKNOTIFIER_HIDE_MONITOR_NTF)) {
+                    mNotificationManager.cancel(SERVICE_NOTIFICATION_ID);
+                }
             }
         });
 

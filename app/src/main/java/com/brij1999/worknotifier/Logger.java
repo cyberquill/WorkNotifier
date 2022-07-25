@@ -52,7 +52,7 @@ public class Logger {
             }
             fos.write(log.getBytes(StandardCharsets.UTF_8));
             fos.flush();
-            if (BuildConfig.DEBUG)    Log.e("WorkNotifier", log);
+            Log.e("WorkNotifier", log);
         } catch (IOException e) {
             e.printStackTrace();
         }
